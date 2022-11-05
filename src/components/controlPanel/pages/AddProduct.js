@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import useTools from "../../../hook/useTools";
@@ -14,7 +13,6 @@ const AddProduct = () => {
   const [productImageURL, setProductImageURL] = useState([]);
   const { isClick, setIsClick, buttonRefresh } = useTools();
   const { register, handleSubmit, reset } = useForm();
-  let navigate = useNavigate();
 
   const handleImageUpload = (e) => {
     const imgFiles = e.target.files;

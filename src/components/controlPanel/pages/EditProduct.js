@@ -27,24 +27,27 @@ const EditProduct = () => {
   } = getProduct;
   const { isClick, setIsClick, buttonRefresh } = useTools();
   let navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsClick(true);
-    axios
-      .put(`http://localhost:5000/app/v1/product/${id}`, getProduct)
-      .then((res) => {
-        if (res.data.data.modifiedCount > 0) {
-          toast.success("Successfully updated user");
-          navigate("/control-panel/product-list");
-        }
-      })
-      .catch((err) => console.log(err));
-    buttonRefresh();
-  };
   const handleInputChange = (e) => {
     setGetProduct({ ...getProduct, [e.target.id]: e.target.value });
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsClick(true);
+    if (id) {
+      axios
+        .put(`http://localhost:5000/app/v1/product/${id}`, getProduct)
+        .then((res) => {
+          console.log(res.data.status);
+          if (res.data.status === "success") {
+            toast.success("Successfully updated user");
+            navigate("/control-panel/product-list");
+          }
+        })
+        .catch((err) => console.log(err));
+    }
+    buttonRefresh();
+  };
+
   return (
     <div className="container">
       <div className="row justify-content-center">

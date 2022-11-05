@@ -7,6 +7,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { addToCart } from "../../../redux/features/cart/cartSlice";
 import { useDispatch } from "react-redux";
 import { addToWishlist } from "../../../redux/features/wishlist/wishlistSlice";
+import LatestProductPH from "../placeholders/LatestProductPH";
 
 const AllProducts = () => {
   const { allProducts, loading, error } = useDatabase(
@@ -14,7 +15,7 @@ const AllProducts = () => {
   );
   const dispatch = useDispatch();
 
-  if (loading) return <p>Loading</p>;
+  if (loading) return <LatestProductPH />;
 
   if (error) console.log(error);
 

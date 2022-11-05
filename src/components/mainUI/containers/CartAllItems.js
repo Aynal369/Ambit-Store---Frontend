@@ -92,7 +92,7 @@ const CartAllItems = () => {
                   color="error"
                   onClick={() => dispatch(clearCart())}
                 >
-                  Clear car
+                  Clear cart
                 </Button>
               </div>
               <div>
@@ -107,7 +107,11 @@ const CartAllItems = () => {
                 <p className="text-muted">
                   Taxes and shipping calculated at checkout
                 </p>
-                <Button variant="contained" fullWidth>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  onClick={() => navigate("/checkout")}
+                >
                   Check out
                 </Button>
                 <div className="text-center mt-3">

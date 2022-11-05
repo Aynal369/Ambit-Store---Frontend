@@ -25,6 +25,7 @@ const useDatabase = (url) => {
         setLoading(false);
       });
   }, [url]);
+
   return { allUsers, allProducts, getProduct, setGetProduct, loading, error };
 };
 

@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../../redux/features/cart/cartSlice";
 import { addToWishlist } from "../../../redux/features/wishlist/wishlistSlice";
+import LatestProductPH from "../placeholders/LatestProductPH";
 
 const LatestProduct = () => {
   const { allProducts, loading, error } = useDatabase(
@@ -14,13 +15,13 @@ const LatestProduct = () => {
   );
 
   const dispatch = useDispatch();
-  if (loading) return <p>Loading</p>;
+  if (loading) return <LatestProductPH />;
 
   if (error) console.log(error);
   return (
     <div className="container py-4">
       <div className="row g-4">
-        {allProducts.slice(0, 8).map((data) => (
+        {allProducts.slice(0, 16).map((data) => (
           <div className="col-sm-3" key={data._id}>
             <div className="card border-0 h-100 product_card">
               <Link to={`/products-details/${data._id}`}>

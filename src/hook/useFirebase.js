@@ -19,8 +19,12 @@ const useFirebase = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isUser, setIsUser] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
 
   const auth = getAuth();
+  // Current auth state
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -70,12 +74,8 @@ const useFirebase = () => {
   const userSaveOnDatabase = (userData) => {
     axios
       .post("http://localhost:5000/app/v1/users", userData)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
+      .then((res) => {})
+      .catch((err) => {});
   };
   // User login
   const userLogin = (email, password, navigate, location) => {
@@ -84,8 +84,8 @@ const useFirebase = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         if (user) {
-          setUsers(user);
           setIsLoggedIn(true);
+          setUsers(user);
           handleJsonWebToken(user.email);
           toast.success("Congratulations! You are successfully logged in");
           const destination = location.state?.from || "/";
@@ -106,6 +106,17 @@ const useFirebase = () => {
         }
       })
       .finally(() => setIsLoading(false));
+  };
+  // handle jwt
+  const handleJsonWebToken = (email) => {
+    axios
+      .put(`http://localhost:5000/app/v1/users/${email}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err.response.data);
+      });
   };
   /*  useEffect(() => {
     let subscribed = true;
@@ -150,34 +161,52 @@ const useFirebase = () => {
         }
       });
   };
-  const handleJsonWebToken = (email) => {
-    axios
-      .put(`http://localhost:5000/app/v1/users?email=${email}`)
-      .then((res) => {
-        console.log(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err.response.data);
-      });
-  };
+  // User role defined
+  useEffect(() => {
+    let subscribed = true;
+    if (users.email) {
+      axios
+        .get(`http://localhost:5000/app/v1/users/${users.email}`)
+        .then((res) => {
+          if (subscribed) {
+            if (res.data?.data?.role === "admin") {
+              setIsAdmin(true);
+            } else if (res.data?.data?.role === "user") {
+              setIsUser(true);
+            }
+            setAccessToken(res.data?.data?.token);
+            localStorage.setItem("accessToken", accessToken);
+          }
+        })
+        .catch((err) => {
+          console.log(err.response?.data);
+        })
+        .finally(() => setIsLoading(false));
+    }
+    return () => (subscribed = false);
+  }, [users.email, accessToken]);
+  // User sign out
   const handleSignOut = () => {
     setIsLoading(true);
     signOut(auth)
       .then(() => {
-        setUsers({});
         setIsLoggedIn(false);
-        toast.warn("Successfully logged out");
+        setUsers({});
         localStorage.removeItem("accessToken");
+        toast.warn("logged out");
       })
       .catch((error) => {
         // An error happened.
       })
       .finally(() => setIsLoading(false));
   };
+
   return {
     users,
     isLoading,
     isLoggedIn,
+    isAdmin,
+    isUser,
     createNewUser,
     userLogin,
     handlePasswordResetEmail,

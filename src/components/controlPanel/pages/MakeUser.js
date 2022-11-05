@@ -7,26 +7,30 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const MakeUser = () => {
   const { isClick, setIsClick, buttonRefresh } = useTools();
   const { register, handleSubmit } = useForm();
-
+  const navigate = useNavigate();
   const onSubmit = (data) => {
     setIsClick(true);
     const email = data.email;
-    axios
-      .patch(`http://localhost:5000/app/v1/users?email=${email}`, {
-        role: "user",
-      })
-      .then((response) => {
-        if (response.data.data.modifiedCount > 0) {
-          toast.success("Congratulations! successfully make user");
-        }
-      })
-      .catch((err) => {
-        Swal("Alert!", `${err.response.data.message}`, "error");
-      });
+    if (email) {
+      axios
+        .patch(`http://localhost:5000/app/v1/users/${email}`, {
+          role: "user",
+        })
+        .then((response) => {
+          if (response.data.data.modifiedCount > 0) {
+            toast.success("Congratulations! successfully make user");
+            navigate("/control-panel/user-list");
+          }
+        })
+        .catch((err) => {
+          Swal("Alert!", `${err.response.data.message}`, "error");
+        });
+    }
     buttonRefresh();
   };
   return (

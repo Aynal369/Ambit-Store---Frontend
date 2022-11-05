@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -16,7 +15,8 @@ import useAuth from "../../../hook/useAuth";
 import { useSelector } from "react-redux";
 
 const CartArea = () => {
-  const { users } = useAuth();
+  const { users, isAdmin } = useAuth();
+
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
   const wishlist = useSelector((state) => state.wishlist);
@@ -50,21 +50,21 @@ const CartArea = () => {
         <>
           <Tooltip title="Login/Register" arrow>
             <IconButton onClick={() => navigate("/login")}>
-              <Person3Icon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Dashboard" arrow>
-            <IconButton onClick={() => navigate("/dashboard")}>
-              <DashboardIcon />
+              <Person3Icon color="primary" />
             </IconButton>
           </Tooltip>
         </>
       )}
-      <Tooltip title="Admin Panel" arrow>
-        <IconButton color="primary" onClick={() => navigate("/control-panel")}>
-          <AdminPanelSettingsIcon />
-        </IconButton>
-      </Tooltip>
+      {isAdmin && (
+        <Tooltip title="Admin Panel" arrow>
+          <IconButton
+            color="primary"
+            onClick={() => navigate("/control-panel")}
+          >
+            <AdminPanelSettingsIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </Stack>
   );
 };

@@ -1,6 +1,6 @@
 import React from "react";
-import HeroSlider from "../containers/HeroSlider";
 import LatestProduct from "../containers/LatestProduct";
+import Footer from "../footer/Footer";
 import Header from "../header/Header";
 
 const Home = () => {
@@ -8,9 +8,9 @@ const Home = () => {
     <>
       <Header />
       <main>
-        <HeroSlider />
         <LatestProduct />
       </main>
+      <Footer />
     </>
   );
 };

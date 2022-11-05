@@ -1,13 +1,16 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import useDatabase from "../../../hook/useDatabase";
 import IconButton from "@mui/material/IconButton";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 const ProductList = () => {
-  const { allProducts } = useDatabase("http://localhost:5000/app/v1/products");
+  const { allProducts, setAllProducts } = useDatabase(
+    "http://localhost:5000/app/v1/products"
+  );
   let navigate = useNavigate();
   const handleEmailSearch = (e) => {
     /*  const inputValue = e.target.value;
@@ -20,22 +23,18 @@ const ProductList = () => {
   const handleUpdateProduct = (id) => {
     navigate(`/control-panel/edit-product/${id}`);
   };
-  const handleDeleteClient = (id) => {
-    /*  const proceed = window.confirm("Are you sure you want to delete");
-      if (proceed) {
-        const url = `https://tranquil-gorge-34559.herokuapp.com/clients/${id}`;
-        fetch(url, {
-          method: "DELETE",
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.deletedCount > 0) {
-              toast.warn("Successfully delete 1 client ");
-              const remaining = clients.filter((data) => data._id !== id);
-              setClients(remaining);
-            }
-          });
-      } */
+  const handleDeleteProduct = (id) => {
+    axios
+      .delete(`http://localhost:5000/app/v1/product/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.status === "success") {
+          toast.warn("Remove product");
+          const remaining = allProducts.filter((item) => item._id !== id);
+          setAllProducts(remaining);
+        }
+      })
+      .catch((err) => console.log(err.response.data));
   };
   return (
     <div className="bg-white my-5 shadow p-2 rounded-3">
@@ -80,28 +79,24 @@ const ProductList = () => {
                 </tr>
               </thead>
               <tbody>
-                {allProducts.map((data, index) => (
-                  <tr key={data._id}>
+                {allProducts.map((i, index) => (
+                  <tr key={i._id}>
                     <th scope="row">{index + 1}</th>
                     <td>
-                      <img
-                        src={data.thumbnailURL}
-                        alt={data.title}
-                        width="30px"
-                      />
+                      <img src={i.thumbnailURL} alt={i.title} width="30px" />
                     </td>
-                    <td>{data.title}</td>
-                    <td>{data.description}</td>
-                    <td>{data.price}</td>
-                    <td>{data.discountPercentage}</td>
-                    <td>{data.rating}</td>
-                    <td>{data.stock}</td>
-                    <td>{data.brand}</td>
-                    <td>{data.category}</td>
+                    <td>{i.title}</td>
+                    <td>{i.description}</td>
+                    <td>{i.price}</td>
+                    <td>{i.discountPercentage}</td>
+                    <td>{i.rating}</td>
+                    <td>{i.stock}</td>
+                    <td>{i.brand}</td>
+                    <td>{i.category}</td>
                     <td>
                       <IconButton
                         color="warning"
-                        onClick={() => handleUpdateProduct(data._id)}
+                        onClick={() => handleUpdateProduct(i._id)}
                       >
                         <EditIcon />
                       </IconButton>
@@ -109,7 +104,7 @@ const ProductList = () => {
                     <td>
                       <IconButton
                         color="error"
-                        onClick={() => handleDeleteClient(data._id)}
+                        onClick={() => handleDeleteProduct(i._id)}
                       >
                         <DeleteForeverIcon />
                       </IconButton>

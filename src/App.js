@@ -20,6 +20,9 @@ import ProductDetails from "./components/mainUI/containers/ProductDetails";
 import DynamicPage from "./components/mainUI/pages/DynamicPage";
 import ShoppingCart from "./components/mainUI/pages/ShoppingCart";
 import WishList from "./components/mainUI/pages/WishList";
+import RequireAdminAuth from "./authentication/RequireAdminAuth";
+import Dashboard from "./components/dashboard/pages/Dashboard";
+import Checkout from "./components/mainUI/pages/Checkout";
 
 function App() {
   return (
@@ -34,8 +37,17 @@ function App() {
             <Route path="/products-details/:id" element={<ProductDetails />} />
             <Route path="/shopping-cart" element={<ShoppingCart />} />
             <Route path="/wish-list" element={<WishList />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Route>
-          <Route path="/control-panel" element={<ControlPanel />}>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+          <Route
+            path="/control-panel"
+            element={
+              <RequireAdminAuth>
+                <ControlPanel />
+              </RequireAdminAuth>
+            }
+          >
             <Route path="/control-panel/user-list" element={<UserList />} />
             <Route path="/control-panel/add-product" element={<AddProduct />} />
             <Route
